@@ -8,17 +8,14 @@ export const filterData = (query: string, data: IGroup[]) => {
 	}
 };
 
-export function not(a: IGroup[], b: IGroup[]) {
+export function not(a: readonly IGroup[], b: readonly IGroup[]) {
 	return a.filter(value => b.indexOf(value) === -1);
 }
 
-export function intersection(a: IGroup[], b: IGroup[]) {
-	// console.log('left', a)
-	// console.log('right', b)
-	// console.log(a.filter(value => b.indexOf(value) !== -1))
+export function intersection(a: readonly IGroup[], b: readonly IGroup[]) {
 	return a.filter(value => b.indexOf(value) !== -1);
 }
 
-export function union(a: IGroup[], b: IGroup[]) {
+export function union(a: readonly IGroup[], b: readonly IGroup[]) {
 	return [...a, ...not(b, a)];
 }

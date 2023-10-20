@@ -1,13 +1,11 @@
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import './App.css'
-import { IFormFields } from './app.interface'
-
-
-import TransferList, { IGroup } from './transferList/transferList'
 import { useCallback, useEffect, useState } from 'react';
+import { IGroup } from './transferList';
+import { IFormFields } from '../app.interface';
 
 
-export const currentGroups: IGroup[] | null = [
+const currentGroups: IGroup[] | null = [
   {
     name: "Organization Management",
     distinguishedName: "CN=Organization Management,OU=Microsoft Exchange Security Groups,DC=office,DC=lan",
@@ -47,11 +45,11 @@ const availableGroups: IGroup[] = [
 
 
 function App() {
-  const { handleSubmit, control, setValue,getValues, register } = useForm<IFormFields>({
+  const { handleSubmit, control, setValue, unregister } = useForm<IFormFields>({
     mode: 'onChange',
-    defaultValues: {
-      groups: currentGroups
-    }
+    // defaultValues: {
+    //   groups: currentGroups
+    // }
   })
 
   const onSubmit: SubmitHandler<IFormFields> = (data) => {
@@ -75,7 +73,33 @@ function App() {
   return (
     <div style={{ textAlign: 'center' }}>
       <form style={{ width: '100%', margin: '0 auto' }} onSubmit={handleSubmit(onSubmit)}>
-        <TransferList control={control} setValue={setValue} getValues={getValues} register={register}/>
+        <div>
+          <Controller
+            name="groups"
+            control={control}
+            render={({ field }) => (
+
+              <>
+                {field.value ? (
+                  <TransferList
+                    currentGroups={field.value}
+                    availableGroups={availableGroups ?? []}
+                    field={field}
+                  />
+                ) : (
+                  field.value === null && (
+                    <TransferList
+                      currentGroups={[]}
+                      availableGroups={availableGroups ?? []}
+                      field={field}
+                    />
+                  )
+                )}
+              </>
+            )}
+          />
+        </div>
+
         <button type='submit'>отправить</button>
       </form>
     </div>

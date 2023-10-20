@@ -7,9 +7,9 @@ import SearchBar from "./searchBar"
 interface ICustomList {
     title: React.ReactNode
     items: IGroup[] 
-    checked: IGroup[]
-    handleToggleAll: (items: IGroup[]) => () => void
-    numberOfChecked: (items: IGroup[]) => number
+    checked: readonly IGroup[]
+    handleToggleAll: (items: readonly IGroup[]) => () => void
+    numberOfChecked: (items: readonly IGroup[]) => number
     handleToggle: (value: IGroup) => () => void
 }
 
