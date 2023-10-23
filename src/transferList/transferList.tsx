@@ -1,8 +1,8 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { intersection, not, union } from "./functions";
 import { Button, Grid } from "@mui/material";
 import CustomList from "./customList";
-import { Control, Controller, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
+import { Control, UseFormGetValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 import { IFormFields } from "../app.interface";
 export interface IGroup {
 	name: string;
@@ -11,10 +11,10 @@ export interface IGroup {
 }
 
 export interface ITransferList {
-	control: Control<IFormFields, any>
 	setValue: UseFormSetValue<IFormFields>
 	getValues: UseFormGetValues<IFormFields>
 	register: UseFormRegister<IFormFields>
+	control: Control<IFormFields, any>
 }
 
 export interface IGroup {
@@ -36,27 +36,20 @@ const availableGroups: IGroup[] = [
 	},
 ];
 
+// const availableGroups: IGroup[] | null = null
 
-const TransferList: FC<ITransferList> = ({ control, setValue, getValues, register }) => {
+const TransferList: FC<ITransferList> = ({ setValue, getValues, register, control }) => {
 	const disabled = false;
 	const [checked, setChecked] = useState<IGroup[]>([]);
 	const [left, setLeft] = useState<IGroup[]>(getValues('groups') || []);
 	const [right, setRight] = useState<IGroup[]>(availableGroups || []);
 
-	// console.log(checked, left)
 	const leftChecked = intersection(checked, left);
-	// console.log("LEFT Checked", leftChecked)
-
 	const rightChecked = intersection(checked, right);
-	// console.log("Right Checked", rightChecked)
 
-	// console.log('checked', checked)
 	const handleToggle = (group: IGroup) => () => {
-		// console.log('я зашел в функцию')
 		const currentIndex = checked.indexOf(group);
-		// console.log('currentIndex', currentIndex)
 		const newChecked = [...checked];
-		// console.log('newChecked', newChecked)
 
 		if (currentIndex === -1) {
 			newChecked.push(group);
@@ -85,20 +78,13 @@ const TransferList: FC<ITransferList> = ({ control, setValue, getValues, registe
 		setLeft(not(left, leftChecked));
 		setChecked(not(checked, leftChecked));
 
-		// Получаем текущее значение поля "groups" через control
 		const currentGroups = getValues('groups');
-
-		// Обновляем значение поля "groups" через контрол
-		// setValue('groups', (currentGroups as IGroup[]).concat(leftChecked));
+		console.log(currentGroups)
+		console.log(leftChecked)
 		if (currentGroups === null) {
-			// Если поле "groups" равно null, нет нечего удалять, поэтому ничего не делаем
-			return;
+			setValue('groups', leftChecked)
 		}
-
-		// Фильтруем элементы, оставляя только те, которые не находятся в leftChecked
-		const updatedGroups = currentGroups.filter((group) => !leftChecked.includes(group));
-
-		// Обновляем значение поля "groups" через контрол
+		const updatedGroups = (currentGroups! as IGroup[]).filter((item1) => !leftChecked.some(item2 => item1.distinguishedName === item2.distinguishedName));
 		setValue('groups', updatedGroups);
 
 	};
@@ -111,14 +97,10 @@ const TransferList: FC<ITransferList> = ({ control, setValue, getValues, registe
 		setRight(not(right, rightChecked));
 		setChecked(not(checked, rightChecked));
 
-		// Получаем текущее значение поля "groups" через control
 		const currentGroups = getValues('groups');
-		// console.log(currentGroups)
-
 		if (currentGroups === null) {
 			setValue('groups', rightChecked);
 		} else {
-			//currentGroups! уточняет , что currentGroups не является null или undefined
 			setValue('groups', (currentGroups! as IGroup[]).concat(rightChecked));
 		}
 	};
@@ -133,7 +115,7 @@ const TransferList: FC<ITransferList> = ({ control, setValue, getValues, registe
 					handleToggleAll={handleToggleAll}
 					items={left ?? []}
 					numberOfChecked={numberOfChecked}
-					{...register('groups')}
+					register={register('groups')}
 				/>
 				{/* <Controller
 					name="groups"
@@ -182,6 +164,7 @@ const TransferList: FC<ITransferList> = ({ control, setValue, getValues, registe
 					handleToggleAll={handleToggleAll}
 					items={right}
 					numberOfChecked={numberOfChecked}
+					register={null}
 				/>
 			</Grid>
 		</Grid>

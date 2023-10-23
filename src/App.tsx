@@ -31,21 +31,6 @@ export const currentGroups: IGroup[] | null = [
 ];
 // const currentGroups: IGroup[] | null = null
 
-const availableGroups: IGroup[] = [
-  {
-    name: "Paris1",
-    distinguishedName: "CN=Paris1,OU=...",
-    description: "Description for Paris1"
-  },
-  {
-    name: "London1",
-    distinguishedName: "CN=London1,OU=...",
-    description: "Description for London1"
-  },
-];
-// const availableGroups: IGroup[] | null = null
-
-
 function App() {
   const { handleSubmit, control, setValue,getValues, register } = useForm<IFormFields>({
     mode: 'onChange',

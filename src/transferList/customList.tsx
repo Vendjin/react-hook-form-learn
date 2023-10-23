@@ -3,6 +3,7 @@ import { IGroup } from "./transferList"
 import { filterData } from "./functions"
 import { Card, CardHeader, Checkbox, Divider, FormControlLabel, List, ListItem, ListItemIcon, ListItemText } from "@mui/material"
 import SearchBar from "./searchBar"
+import { UseFormRegisterReturn } from "react-hook-form"
 
 interface ICustomList {
     title: React.ReactNode
@@ -11,6 +12,7 @@ interface ICustomList {
     handleToggleAll: (items: IGroup[]) => () => void
     numberOfChecked: (items: IGroup[]) => number
     handleToggle: (value: IGroup) => () => void
+    register: UseFormRegisterReturn<"groups"> | null;
 }
 
 const CustomList: FC<ICustomList> = ({ title, items, checked, handleToggleAll, numberOfChecked, handleToggle }) => {
